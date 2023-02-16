@@ -1,0 +1,36 @@
+#Download remaining files
+
+import requests
+api_key='d62953eddacc4be396ed8caa1f8e5292'
+interval = '1day'
+api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NASDAQ&apikey={api_key}&include_delisted=true'
+data=requests.get(api_url).json()
+print("Enter the start date in format yyyy-mm-dd")
+sdate=input()
+print("Enter the end date in format yyyy-mm-dd")
+edate=input()
+import pprint
+import os
+import sys
+import time
+for x in data["data"][3600:4300]:
+  ticker=x["symbol"]
+  path="/home/akshay/Downloads/alpaca/"+ticker+".csv"
+  print(path)
+  isFile = os.path.isfile(path)
+  #f = open("/home/akshay/Downloads/alpaca/"+ticker, "a+")
+  #f.write(data2.text)
+  #f.close()
+  #os.rename("/home/akshay/Downloads/alpaca/"+ticker,"/home/akshay/Downloads/alpaca/"+ticker+".csv")
+  if isFile=True
+   continue
+  else: 
+   print("An Exception occured at ")
+   print(x)
+   #ticker=x["symbol"]
+   #api_url2=f'https://api.twelvedata.com/time_series?symbol={ticker}&start_date={sdate}&end_date={edate}&interval={interval}&outputsize=3000&apikey={api_key}&format=CSV'
+   #data2=requests.get(api_url2)
+   #f = open("/home/akshay/Downloads/alpaca/"+ticker, "w")
+   #f.write(data2.text)
+   #f.close()
+   #f.write(data2.text)
