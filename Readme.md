@@ -5,3 +5,7 @@ My work made me try out a lot of market api and choose those having best feature
 Some of the market Api that i worked on are Alphavantage, Alpaca, Polygon, Twelvedata.
 To use several features of these api, codes are available in this repository.
 There is also codes for several features of pandas/numpy that are used to control the output format using these market api.
+
+>Download_stock_info had code which downloads stock data through twelvedata api
+
+>download_remaining_file could check for files already present and download the files left
