@@ -6,12 +6,10 @@ from datetime import datetime
 import numpy as np
 import csv
 filename='Megacsv.csv'
-api_key='NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+api_key='<key>
 interval = '1day'
 #api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=true'
 #api_url2= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=false'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIyLTExLTA0JmxpbWl0PTEwMDAmbWFya2V0PXN0b2NrcyZvcmRlcj1hc2MmcGFnZV9tYXJrZXI9TEJSVCU3Q2I0NjY1OWY1ZDZkMDVlYjgwMmJjNmUwZjE1YzNhOGVhMjk4YzY3MGM0ZjRjOTU3MGVkNDM3OGJjNzY1ZjM1NTQmc29ydD10aWNrZXImdHlwZT1DUw&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
 #data=requests.get(api_url).json()
 #data2=requests.get(api_url2).json()
 #f = open("/home/akshay/Downloads/alpaca/"+ticker, "w")
@@ -32,8 +30,7 @@ for dt in rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=end_date):
   try:
      print(x)
      ticker=x
-     #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2018-01-01/2018-07-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
-     api_url=f'https://api.polygon.io/vX/reference/financials?ticker={x}&timeframe=quarterly&filing_date.gte={date}&period_of_report_date.gt={date}&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+     api_url=f'https://api.polygon.io/vX/reference/financials?ticker={x}&timeframe=quarterly&filing_date.gte={date}&period_of_report_date.gt={date}&apiKey=<key>
      data3=requests.get(api_url)
      #data = json.loads(data3)
      #print(data3)
@@ -109,7 +106,7 @@ for dt in rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=end_date):
      f.close()
      print("quaterly done")
      
-     api_url=f'https://api.polygon.io/vX/reference/financials?ticker={x}&timeframe=annual&filing_date.gte={date}&period_of_report_date.gt={date}&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+     api_url=f'https://api.polygon.io/vX/reference/financials?ticker={x}&timeframe=annual&filing_date.gte={date}&period_of_report_date.gt={date}&apiKey=<key>
      data3=requests.get(api_url)
      jdata = json.loads(data3.text)
      #df = pd.DataFrame(jdata["results"])
