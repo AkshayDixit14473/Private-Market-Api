@@ -45,10 +45,8 @@ def sendmail(sender_address,receiver_address,subject,mail,sender_pass):
 
 #api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=true'
 #api_url2= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=false'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
-api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIyLTExLTA0JmxpbWl0PTEwMDAmbWFya2V0PXN0b2NrcyZvcmRlcj1hc2MmcGFnZV9tYXJrZXI9TEJSVCU3Q2I0NjY1OWY1ZDZkMDVlYjgwMmJjNmUwZjE1YzNhOGVhMjk4YzY3MGM0ZjRjOTU3MGVkNDM3OGJjNzY1ZjM1NTQmc29ydD10aWNrZXImdHlwZT1DUw&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
-
+#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=key'
+api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=<key>'
 data=requests.get(api_url)
  
 jdata = json.loads(data.text)
@@ -60,7 +58,7 @@ print(date)
 ########################################## CHECKING FOR TRADE #################################################################
 try:
  print("Checking trades on the date")
- api_url=f'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/{date}/{date}?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+ api_url=f'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/{date}/{date}?adjusted=false&sort=asc&limit=50000&apiKey=<key>'
  data=requests.get(api_url)
  
  jdata = json.loads(data.text)
@@ -68,8 +66,8 @@ try:
  print("No problem")
 except:
  print("No trade on this date")
- #sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
- #sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
 
 ##########################################  DOWNLOADING TICKERS ##############################################################
 try :
@@ -80,8 +78,8 @@ try :
  print("Directory '%s' created" %directory)
 except:
  print("Folder is already present")
- #sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
- #sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
  exit()
 
 parent_dir="/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date
@@ -90,7 +88,7 @@ path = os.path.join(parent_dir, directory)
 os.mkdir(path)
 print("Directory '%s' created" %directory)
 
-api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=<id>'
 data=requests.get(api_url)
 f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_1.json", "w")
 f.write(data.text)
