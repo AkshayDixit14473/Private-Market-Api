@@ -29,7 +29,7 @@ date="2022--12--12"
 '''
 ########################################### Downloading Options Contracts ######################################################
 f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_options.csv", "w")
-api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&apiKey=<key>'
 data=requests.get(api_url)
 jdata = json.loads(data.text)
 df = pd.DataFrame(jdata["results"])
@@ -45,9 +45,7 @@ f.write('\n')
 time.sleep(15)
 f.close()
 
-api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&expiration_date.gt=2022-11-16&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ' 
-#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=false&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&expiration_date.gt=2022-11-16&apiKey=<key>' 
 data=requests.get(api_url)
 f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_1.json", "w")
 f.write(data.text)
@@ -112,7 +110,7 @@ print(column)
 ########################################### Downloading Options Contracts ######################################################
 #f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/Megaticker.csv", "w")
 #for x in column:
-  #api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={x}&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+  #api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={x}&apiKey=<key>'
   #data=requests.get(api_url)
   #jdata = json.loads(data.text)
   #df = pd.DataFrame(jdata["results"])
@@ -138,8 +136,8 @@ for x in column:
    if my_file.is_file():
     print("present")
    else:
-    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2021-12-20/2022-12-12?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
-    #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/2022-07-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2021-12-20/2022-12-12?adjusted=false&sort=asc&limit=50000&apiKey=<key>'
+    #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/2022-07-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=<key>'
     data3=requests.get(api_url)
     #data = json.loads(data3)
     #print(data3)
