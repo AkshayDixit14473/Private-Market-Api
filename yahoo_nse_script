@@ -66,8 +66,7 @@ try:
  print("No problem")
 except:
  print("No trade on this date")
- #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
- #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
+
 
 ##########################################  DOWNLOADING TICKERS ##############################################################
 try :
