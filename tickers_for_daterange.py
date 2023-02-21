@@ -15,8 +15,6 @@ interval = '1day'
 dates= '2022-01-01'
 #api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=true'
 #api_url2= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=false'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
-#api_url=f'https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIyLTExLTA0JmxpbWl0PTEwMDAmbWFya2V0PXN0b2NrcyZvcmRlcj1hc2MmcGFnZV9tYXJrZXI9TEJSVCU3Q2I0NjY1OWY1ZDZkMDVlYjgwMmJjNmUwZjE1YzNhOGVhMjk4YzY3MGM0ZjRjOTU3MGVkNDM3OGJjNzY1ZjM1NTQmc29ydD10aWNrZXImdHlwZT1DUw&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
 
 def daterange(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
