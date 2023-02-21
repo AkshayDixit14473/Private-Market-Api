@@ -1,0 +1,343 @@
+import requests
+import json
+import pandas as pd
+import datetime
+from datetime import datetime
+from datetime import date, timedelta
+import pprint
+import os
+import sys
+import time
+import glob
+import subprocess
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+import time
+import tarfile
+import time
+import shutil
+
+ticker='delisted1'
+api_key='NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+interval = '1day'
+list=[]
+
+def sendmail(sender_address,receiver_address,subject,mail,sender_pass):
+	message = MIMEMultipart()
+	message['From'] = sender_address
+	message['To'] = receiver_address
+	message['Subject'] = subject
+	message.attach(MIMEText(mail, 'plain'))
+	session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
+	session.starttls() #enable security
+	session.login(sender_address, sender_pass) #login with mail_id and password
+	text = message.as_string()
+	session.sendmail(sender_address, receiver_address, text)
+	session.quit()
+	print('Mail Sent')
+
+######################################### GETTING LATEST DATE ##############################################################
+
+#api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=true'
+#api_url2= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=false'
+#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&sort=ticker&order=asc&limit=1000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+#api_url=f'https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIyLTExLTA0JmxpbWl0PTEwMDAmbWFya2V0PXN0b2NrcyZvcmRlcj1hc2MmcGFnZV9tYXJrZXI9TEJSVCU3Q2I0NjY1OWY1ZDZkMDVlYjgwMmJjNmUwZjE1YzNhOGVhMjk4YzY3MGM0ZjRjOTU3MGVkNDM3OGJjNzY1ZjM1NTQmc29ydD10aWNrZXImdHlwZT1DUw&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+
+data=requests.get(api_url)
+ 
+jdata = json.loads(data.text)
+df1 = pd.DataFrame(jdata["results"])
+date=df1["last_updated_utc"][1]
+date=date[0:10]
+#date='2022-12-11'
+print(date)
+########################################## CHECKING FOR TRADE #################################################################
+try:
+ print("Checking trades on the date")
+ api_url=f'https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/{date}/{date}?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+ data=requests.get(api_url)
+ 
+ jdata = json.loads(data.text)
+ df1 = pd.DataFrame(jdata["results"])
+ print("No problem")
+except:
+ print("No trade on this date")
+ #sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","No Trade on "+date,"qinrzvmhfusnwzyw")
+
+##########################################  DOWNLOADING TICKERS ##############################################################
+try :
+ parent_dir="/home/akshay/Downloads/polygon/Latest_minute_level_data"
+ directory=date
+ path = os.path.join(parent_dir, directory)
+ os.mkdir(path)
+ print("Directory '%s' created" %directory)
+except:
+ print("Folder is already present")
+ #sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
+ #sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
+ exit()
+
+parent_dir="/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date
+directory="Stocks"
+path = os.path.join(parent_dir, directory)
+os.mkdir(path)
+print("Directory '%s' created" %directory)
+
+api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+data=requests.get(api_url)
+f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_1.json", "w")
+f.write(data.text)
+f.close()
+
+jdata = json.loads(data.text)
+df1 = pd.DataFrame(jdata["results"])
+df1.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_1.csv",index=False, sep=',')
+print(df1)
+#time.sleep(15)
+i=2
+next_api_url=api_url
+while i < 20:
+  try:
+    data=requests.get(next_api_url).json()
+    next=data["next_url"]
+    print(next)
+    print(i)
+    next_api_url=f'{next}&apiKey={api_key}'
+    data=requests.get(next_api_url)
+    print(data)
+    num=str(i)
+    f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_"+num+".json", "w")
+    f.write(data.text)
+    f.close()
+    jdata = json.loads(data.text)
+    df1 = pd.DataFrame(jdata["results"])
+    df1.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_"+num+".csv",index=False, sep=',')
+    print(df1)
+    i=i+1
+    #time.sleep(15)
+  except:
+    print("now in except")
+    print(i)
+    i=i+1
+
+print("    ")
+print(date+ " JSON Done")
+print("   ")
+ 
+print("Now Concatinating")
+files = os.path.join("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/ticker_*csv")
+ 
+# list of merged files returned
+files = glob.glob(files)
+ 
+print("Resultant CSV after joining all CSV files at a particular location...");
+ 
+# joining files with concat and read_csv
+df = pd.concat(map(pd.read_csv, files), ignore_index=True)
+#df = pd.concat(map(pd.read_csv, ["/home/akshay/Downloads/polygon/"+dates+"_1.csv","/home/akshay/Downloads/polygon/"+dates+"_2.csv","/home/akshay/Downloads/polygon/"+dates+"_3.csv","/home/akshay/Downloads/polygon/"+dates+"_4.csv","/home/akshay/Downloads/polygon/"+dates+"_5.csv","/home/akshay/Downloads/polygon/"+dates+"_6.csv","/home/akshay/Downloads/polygon/"+dates+"_7.csv","/home/akshay/Downloads/polygon/"+dates+"_8.csv","/home/akshay/Downloads/polygon/"+dates+"_9.csv","/home/akshay/Downloads/polygon/"+dates+"_10.csv","/home/akshay/Downloads/polygon/"+dates+"_11.csv"]), ignore_index=True)
+print(df)
+  
+# convert dataframe to csv file
+df.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Megaticker.csv",index=False, sep=',')
+print(date+"CSV Done")
+
+##########################################  DOWNLOADING STOCKS  #############################################################
+
+df = pd.read_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Megaticker.csv")
+column = df.iloc[:, 0]
+print(column)
+for x in column:
+ try:
+    print(x)
+    ticker=x
+    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/{date}/{date}?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+    #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/2022-07-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+    data3=requests.get(api_url)
+    #data = json.loads(data3)
+    #print(data3)
+    #need to iterate through data3 and make it csv format wit right column names
+    jdata = json.loads(data3.text)
+    df = pd.DataFrame(jdata["results"])
+ 
+    
+    #df[["day", "month", "year"]] = df["t"].str.split("-", expand = True)
+    #df['t'] = pd.to_datetime(df['t'], unit='ms')
+    df['t']=pd.to_datetime(df['t'], unit='ms')\
+                 .dt.tz_localize('UTC' )\
+                 .dt.tz_convert('America/New_York')
+    df['year'] = pd.DatetimeIndex(df['t']).year
+    df['month'] = pd.DatetimeIndex(df['t']).month
+    df['day'] = pd.DatetimeIndex(df['t']).day
+    df['hour'] = pd.DatetimeIndex(df['t']).hour
+    df['minutes'] = pd.DatetimeIndex(df['t']).minute
+    df['date'] = pd.to_datetime(df['t']).dt.date
+    df['Time'] = pd.to_datetime(df['t']).dt.time
+    
+    if df.columns.isin(['a']).any():
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     df.columns.values[2] = "adjusted"
+     df.columns.values[3] = "open"
+     df.columns.values[4] = "close"
+     df.columns.values[5] = "high"
+     df.columns.values[6] = "low"
+     df.columns.values[7] = "date"
+     df.columns.values[8] = "no_of_trades"
+     del(df['date'])
+     del(df['op'])
+     df=df.iloc[:,[8,9,10,11,12,2,3,5,6,4,0,1,7]]
+    else:
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     #df.columns.values[2] = "adjusted"
+     df.columns.values[2] = "open"
+     df.columns.values[3] = "close"
+     df.columns.values[4] = "high"
+     df.columns.values[5] = "low"
+     df.columns.values[6] = "date"
+     df.columns.values[7] = "no_of_trades"
+     del(df['date'])
+     df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    
+    #if df.columns.isin(['op']).any():
+     #del(df['op'])
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    #else: 
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+     
+    
+    df.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Stocks/"+ticker+".csv",index=False, sep=',')
+    
+    #print(df)
+    #f = open("/home/akshay/Downloads/alpaca/"+ticker, "w")
+    #f.write(df)
+    #f.close()
+    
+    #print(pd.json_normalize(data3, sep=';'))
+    #df = pd.read_json("/home/akshay/Downloads/alpaca/"+ticker)
+    #data4=df.to_csv("/home/akshay/Downloads/alpaca/"+ticker+".csv", sep=';')
+    #df2 = pd.DataFrame(data4)
+    #print(df2)
+    print(ticker+"..........DONE")
+    #time.sleep(15)
+ except KeyError :
+    print("Keyerror at "+ticker)
+ except:
+    list.append(ticker)
+    print("error at "+ticker)
+    continue
+
+# Set the directory you want to delete
+directory = "/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Stocks"
+
+# Check if the directory exists
+if os.path.exists(directory):
+  # If the directory exists, check if it's empty
+  if not os.listdir(directory):
+    # If the directory is empty, delete it
+    #os.rmdir("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Stocks")
+    shutil.rmtree("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date)
+    sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","No stocks downloaded on "+date,"qinrzvmhfusnwzyw")
+    sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","No stocks downloaded on "+date,"qinrzvmhfusnwzyw")
+    exit()
+    
+tar = tarfile.open("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+".tar.gz", "w:gz")
+tar.add("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date, arcname=date)
+tar.close()
+
+print(list)
+with open("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/errors.csv", 'w') as f:
+ for l in list: 
+  f.write(l)
+  f.write("\n")
+f.close()
+
+while len(list) > 0:
+ for x in list:
+  try:
+    print(x)
+    ticker=x
+    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/{date}/{date}?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+    #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/2022-07-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+    data3=requests.get(api_url)
+    #data = json.loads(data3)
+    #print(data3)
+    #need to iterate through data3 and make it csv format wit right column names
+    jdata = json.loads(data3.text)
+    df = pd.DataFrame(jdata["results"])
+ 
+    
+    #df[["day", "month", "year"]] = df["t"].str.split("-", expand = True)
+    #df['t'] = pd.to_datetime(df['t'], unit='ms')
+    df['t']=pd.to_datetime(df['t'], unit='ms')\
+                 .dt.tz_localize('UTC' )\
+                 .dt.tz_convert('America/New_York')
+    df['year'] = pd.DatetimeIndex(df['t']).year
+    df['month'] = pd.DatetimeIndex(df['t']).month
+    df['day'] = pd.DatetimeIndex(df['t']).day
+    df['hour'] = pd.DatetimeIndex(df['t']).hour
+    df['minutes'] = pd.DatetimeIndex(df['t']).minute
+    df['date'] = pd.to_datetime(df['t']).dt.date
+    df['Time'] = pd.to_datetime(df['t']).dt.time
+    
+    if df.columns.isin(['a']).any():
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     df.columns.values[2] = "adjusted"
+     df.columns.values[3] = "open"
+     df.columns.values[4] = "close"
+     df.columns.values[5] = "high"
+     df.columns.values[6] = "low"
+     df.columns.values[7] = "date"
+     df.columns.values[8] = "no_of_trades"
+     del(df['date'])
+     del(df['op'])
+     df=df.iloc[:,[8,9,10,11,12,2,3,5,6,4,0,1,7]]
+    else:
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     #df.columns.values[2] = "adjusted"
+     df.columns.values[2] = "open"
+     df.columns.values[3] = "close"
+     df.columns.values[4] = "high"
+     df.columns.values[5] = "low"
+     df.columns.values[6] = "date"
+     df.columns.values[7] = "no_of_trades"
+     del(df['date'])
+     df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    
+    #if df.columns.isin(['op']).any():
+     #del(df['op'])
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    #else: 
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+     
+    
+    df.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date+"/Stocks/"+ticker+".csv",index=False, sep=',')
+    
+    #print(df)
+    #f = open("/home/akshay/Downloads/alpaca/"+ticker, "w")
+    #f.write(df)
+    #f.close()
+    
+    #print(pd.json_normalize(data3, sep=';'))
+    #df = pd.read_json("/home/akshay/Downloads/alpaca/"+ticker)
+    #data4=df.to_csv("/home/akshay/Downloads/alpaca/"+ticker+".csv", sep=';')
+    #df2 = pd.DataFrame(data4)
+    #print(df2)
+    print(ticker+"..........DONE")
+    list.remove(x)
+    #time.sleep(15)
+  except:
+    print("error at "+ticker)
+    continue
+    
+print("Code Completed")
+sendmail("emailprojectd@gmail.com","aashish@clopen-research.com","Minute Level Data Status","Download Completed for "+date,"qinrzvmhfusnwzyw")
+sendmail("emailprojectd@gmail.com","akshay.dixit@clopen-research.com","Minute Level Data Status","Download Completed for "+date,"qinrzvmhfusnwzyw")
+

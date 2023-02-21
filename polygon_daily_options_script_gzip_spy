@@ -1,0 +1,215 @@
+import requests
+import json
+import pandas as pd
+import datetime
+from datetime import datetime
+from datetime import date, timedelta
+import pprint
+import os
+import sys
+import time
+import glob
+import subprocess
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+import time
+import tarfile
+import time
+import shutil
+from pathlib import Path
+
+ticker='delisted1'
+api_key='NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+interval = '1day'
+list=[]
+date="2022--12--12"
+'''
+########################################### Downloading Options Contracts ######################################################
+f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_options.csv", "w")
+api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+data=requests.get(api_url)
+jdata = json.loads(data.text)
+df = pd.DataFrame(jdata["results"])
+print(jdata["results"])
+print(jdata["results"][0])
+print(type(jdata["results"][0]))
+print(jdata["results"][0].keys())
+print(jdata["results"][0]['ticker'])
+#next=data["ticker"]
+#print(next)
+f.write(jdata["results"][0]['ticker'])
+f.write('\n')
+time.sleep(15)
+f.close()
+
+api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=SPX&expired=true&limit=1000&sort=expiration_date&expiration_date.gt=2022-11-16&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ' 
+#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=false&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+#api_url=f'https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&active=true&order=asc&limit=1000&sort=ticker&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+data=requests.get(api_url)
+f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_1.json", "w")
+f.write(data.text)
+f.close()
+
+jdata = json.loads(data.text)
+df1 = pd.DataFrame(jdata["results"])
+df1.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_1.csv",index=False, sep=',')
+print(df1)
+time.sleep(15)
+i=2
+next_api_url=api_url
+while i < 200:
+  try:
+    data=requests.get(next_api_url).json()
+    next=data["next_url"]
+    print(next)
+    print(i)
+    next_api_url=f'{next}&apiKey={api_key}'
+    data=requests.get(next_api_url)
+    print(data)
+    num=str(i)
+    f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_"+num+".json", "w")
+    f.write(data.text)
+    f.close()
+    jdata = json.loads(data.text)
+    df1 = pd.DataFrame(jdata["results"])
+    df1.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_"+num+".csv",index=False, sep=',')
+    print(df1)
+    i=i+1
+    time.sleep(15)
+  except:
+    print("now in except")
+    print(i)
+    i=i+1
+
+print("    ")
+print(date+ " JSON Done")
+print("   ")
+ 
+print("Now Concatinating")
+files = os.path.join("/home/akshay/Downloads/polygon/Latest_minute_level_data/ticker_*csv")
+ 
+# list of merged files returned
+files = glob.glob(files)
+ 
+print("Resultant CSV after joining all CSV files at a particular location...");
+ 
+# joining files with concat and read_csv
+df = pd.concat(map(pd.read_csv, files), ignore_index=True)
+#df = pd.concat(map(pd.read_csv, ["/home/akshay/Downloads/polygon/"+dates+"_1.csv","/home/akshay/Downloads/polygon/"+dates+"_2.csv","/home/akshay/Downloads/polygon/"+dates+"_3.csv","/home/akshay/Downloads/polygon/"+dates+"_4.csv","/home/akshay/Downloads/polygon/"+dates+"_5.csv","/home/akshay/Downloads/polygon/"+dates+"_6.csv","/home/akshay/Downloads/polygon/"+dates+"_7.csv","/home/akshay/Downloads/polygon/"+dates+"_8.csv","/home/akshay/Downloads/polygon/"+dates+"_9.csv","/home/akshay/Downloads/polygon/"+dates+"_10.csv","/home/akshay/Downloads/polygon/"+dates+"_11.csv"]), ignore_index=True)
+print(df)
+  
+# convert dataframe to csv file
+df.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/Megaticker.csv",index=False, sep=',')
+print(date+"CSV Done")
+'''
+df = pd.read_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/Megaticker.csv")
+column = df.iloc[:, 7]
+print(column)
+
+########################################### Downloading Options Contracts ######################################################
+#f = open("/home/akshay/Downloads/polygon/Latest_minute_level_data/Megaticker.csv", "w")
+#for x in column:
+  #api_url=f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={x}&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+  #data=requests.get(api_url)
+  #jdata = json.loads(data.text)
+  #df = pd.DataFrame(jdata["results"])
+  #print(type(jdata["results"][0]))
+  #print(jdata["results"][0].keys())
+  #print(jdata["results"][0]['ticker'])
+  #next=data["ticker"]
+  #print(next)
+  #f.write(next)
+ # time.sleep(15)
+#f.close()
+##########################################  DOWNLOADING STOCKS  #############################################################
+#SPX_OPTIONO:SPX221216P00300000.csv
+#SPXOPTIONO:SPX221216C00180000.csv
+#list1=['O:SPXW220923P03955000', 'O:SPXW220923C03960000', 'O:SPXW220923C03965000', 'O:SPXW220923P03965000', 'O:SPXW220923C03970000']
+for x in column:
+#for x in list1:
+  try:
+   print(x)
+   ticker=x
+   my_file = Path("/home/akshay/Downloads/polygon/Latest_minute_level_data/option/SPY_OPTION"+ticker+".csv")
+   print(my_file)
+   if my_file.is_file():
+    print("present")
+   else:
+    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2021-12-20/2022-12-12?adjusted=false&sort=asc&limit=50000&apiKey=NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+    #api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/2022-07-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+    data3=requests.get(api_url)
+    #data = json.loads(data3)
+    #print(data3)
+    #need to iterate through data3 and make it csv format wit right column names
+    jdata = json.loads(data3.text)
+    df = pd.DataFrame(jdata["results"])
+ 
+    
+    #df[["day", "month", "year"]] = df["t"].str.split("-", expand = True)
+    #df['t'] = pd.to_datetime(df['t'], unit='ms')
+    df['t']=pd.to_datetime(df['t'], unit='ms')\
+                 .dt.tz_localize('UTC' )\
+                 .dt.tz_convert('America/New_York')
+    df['year'] = pd.DatetimeIndex(df['t']).year
+    df['month'] = pd.DatetimeIndex(df['t']).month
+    df['day'] = pd.DatetimeIndex(df['t']).day
+    df['hour'] = pd.DatetimeIndex(df['t']).hour
+    df['minutes'] = pd.DatetimeIndex(df['t']).minute
+    df['date'] = pd.to_datetime(df['t']).dt.date
+    df['Time'] = pd.to_datetime(df['t']).dt.time
+    
+    if df.columns.isin(['a']).any():
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     df.columns.values[2] = "adjusted"
+     df.columns.values[3] = "open"
+     df.columns.values[4] = "close"
+     df.columns.values[5] = "high"
+     df.columns.values[6] = "low"
+     df.columns.values[7] = "date"
+     df.columns.values[8] = "no_of_trades"
+     del(df['date'])
+     del(df['op'])
+     df=df.iloc[:,[8,9,10,11,12,2,3,5,6,4,0,1,7]]
+    else:
+     df.columns.values[0] = "volume"
+     df.columns.values[1] = "volume_weighted"
+     #df.columns.values[2] = "adjusted"
+     df.columns.values[2] = "open"
+     df.columns.values[3] = "close"
+     df.columns.values[4] = "high"
+     df.columns.values[5] = "low"
+     df.columns.values[6] = "date"
+     df.columns.values[7] = "no_of_trades"
+     del(df['date'])
+     df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    
+    #if df.columns.isin(['op']).any():
+     #del(df['op'])
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]]
+    #else: 
+     #df=df.iloc[:,[7,8,9,10,11,2,4,5,3,0,1,6]] 
+    df.to_csv("/home/akshay/Downloads/polygon/Latest_minute_level_data/option/SPY_OPTION"+ticker+".csv",index=False, sep=',')
+    
+    #print(df)
+    #f = open("/home/akshay/Downloads/alpaca/"+ticker, "w")
+    #f.write(df)
+    #f.close()
+    
+    #print(pd.json_normalize(data3, sep=';'))
+    #df = pd.read_json("/home/akshay/Downloads/alpaca/"+ticker)
+    #data4=df.to_csv("/home/akshay/Downloads/alpaca/"+ticker+".csv", sep=';')
+    #df2 = pd.DataFrame(data4)
+    #print(df2)
+    print(ticker+"..........DONE")
+    time.sleep(15)
+  except KeyError :
+    print("Keyerror at "+ticker)
+  except:
+    list.append(ticker)
+    print("error at "+ticker)
+    continue
+print(list)
