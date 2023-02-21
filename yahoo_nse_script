@@ -78,8 +78,6 @@ try :
  print("Directory '%s' created" %directory)
 except:
  print("Folder is already present")
- #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
- #sendmail("emailprojectd@gmail.com","<id>","Minute Level Data Status","Folder already present for "+date,"qinrzvmhfusnwzyw")
  exit()
 
 parent_dir="/home/akshay/Downloads/polygon/Latest_minute_level_data/"+date
