@@ -10,7 +10,7 @@ import sys
 import time
 
 ticker='delisted1'
-api_key='Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+api_key='<key>'
 interval = '1day'
 dates= '2022-01-01'
 #api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NYSE&apikey={api_key}&include_delisted=true'
@@ -59,7 +59,7 @@ for single_date in daterange(start_date, end_date):
 #for x in data["results"][0:1000]:
 # try:
 #    ticker=x["ticker"]
-#    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2022-05-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=Kh6pQ50hBPUmltmd9KhQgsKaqjVmPvMk'
+#    api_url=f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/2022-05-01/2022-11-01?adjusted=true&sort=asc&limit=50000&apiKey=<key>'
 #    data3=requests.get(api_url)
     #data = json.loads(data3)
     #print(data3)
