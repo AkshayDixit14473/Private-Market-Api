@@ -1,7 +1,7 @@
 #Download remaining files
 
 import requests
-api_key='d62953eddacc4be396ed8caa1f8e5292'
+api_key='<key>'
 interval = '1day'
 api_url= f'https://api.twelvedata.com/stocks?type=stock&exchange=NASDAQ&apikey={api_key}&include_delisted=true'
 data=requests.get(api_url).json()
