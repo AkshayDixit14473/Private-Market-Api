@@ -23,7 +23,7 @@ import yfinance as yf
 
 date="option"
 ticker='delisted1'
-api_key='NFpgJgDtUOuxQb4D3liadFojYzwZpoyJ'
+api_key='<key>'
 interval = '1day'
 list=[]
 '''
